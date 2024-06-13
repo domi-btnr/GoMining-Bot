@@ -15,17 +15,13 @@ jobs:
             mv .env /tmp/GoMining-Bot/
             echo ".env file moved to /tmp/GoMining-Bot"
           fi
-          if [ -d node_modules ]; then
-            mv node_modules /tmp/GoMining-Bot/
-            echo "node_modules directory moved to /tmp/GoMining-Bot"
-          fi
 
       - name: Checkout Repository
         uses: actions/checkout@v3
       
       - name: Restore Files
         run: |
-          mv /tmp/GoMining-Bot/* /tmp/GoMining-Bot/.* .
+          mv /tmp/GoMining-Bot/.* .
           rm -rf /tmp/GoMining-Bot
           echo "Files restored"
       
