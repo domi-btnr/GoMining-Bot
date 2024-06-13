@@ -1,0 +1,7 @@
+services:
+  app:
+    container_name: GoMining-Bot
+    build: .
+    env_file: .env
+    volumes:
+      - ./cookies.json:/app/cookies.json
