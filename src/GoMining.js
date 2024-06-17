@@ -45,12 +45,12 @@ export default class GoMining {
         await this.page.waitForSelector("input[type=email]");
         await this.page.waitForSelector("input[type=password]");
         await this.page.waitForSelector("button[type=submit]");
-        
+
         await this.page.type("input[type=email]", this.email);
         await this.page.type("input[type=password]", this.password);
         await new Promise(resolve => setTimeout(resolve, 2_500));
         await this.page.click("button[type=submit]");
-        
+
         await new Promise(resolve => setTimeout(resolve, 500));
         const serverErrorElement = await this.page.$("server-error > div");
         const serverError = await serverErrorElement?.evaluate(node => node.innerText);
@@ -75,7 +75,9 @@ export default class GoMining {
             await new Promise(resolve => setTimeout(resolve, waitTime));
         }
         await this.page.reload();
-        await this.page.waitForNavigation();
+        try {
+            await this.page.waitForNavigation();
+        } catch (e) {}
     }
 
     async mine() {
@@ -94,13 +96,15 @@ export default class GoMining {
         while (timerElement) {
             const remaining = await this.convertTimerToSeconds(timerElement);
             await this.waitAndRefresh(remaining);
+            await this.page.waitForSelector("board-nft-mining-farm img");
 
             timerElement = await this.page.$("timer span");
         }
 
+        await this.page.waitForSelector("board-nft-mining-farm img");
         await new Promise(resolve => setTimeout(resolve, 2_500));
         await this.page.click("board-nft-mining-farm img + button");
-        await this.page.waitForNavigation();
+        await new Promise(resolve => setTimeout(resolve, 5_000));
     }
 
     async quit() {
