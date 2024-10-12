@@ -13,20 +13,27 @@ jobs:
           mkdir -p /tmp/GoMining-Bot
           if [ -f .env ]; then
             mv .env /tmp/GoMining-Bot/
-            echo ".env file moved to /tmp/GoMining-Bot"
           fi
 
       - name: Checkout Repository
         uses: actions/checkout@v3
-      
+
       - name: Restore Files
         run: |
-          mv /tmp/GoMining-Bot/.* .
+          if [ -f /tmp/GoMining-Bot/.env ]; then
+            mv /tmp/GoMining-Bot/.env .
+          fi
           rm -rf /tmp/GoMining-Bot
-          echo "Files restored"
       
-      - name: Rebuild Docker Container
+      - name: Build Docker Container
+        run: docker compose build
+
+      - name: Restart Docker Container
         run: |
           docker compose down
-          docker compose build
           docker compose up -d
+
+      - name: Clean Up Docker Images and Build Cache
+        run: |
+          docker image prune -f
+          docker builder prune -f
